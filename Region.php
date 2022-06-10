@@ -20,14 +20,14 @@ class Region
         if(!isset($this->id)){
            echo "false";
        }else{
-        $query = "UPDATE `regions` SET `name`='helo' WHERE `id`='$this->id'"; /// value substituiton add
-       return DB::update($query);
+        $query = "UPDATE `regions2` SET `name`='$this->name' WHERE `id`= $this->id"; /// value substituiton add
+        DB::update($query);
        }
     }
 
     public function delete()
     {
-        $query = "DELETE FROM `regions` WHERE `id`= $this->id"; /// value substituiton add
+        $query = "DELETE FROM `regions2` WHERE `id`= $this->id"; /// value substituiton add
         DB:: delete($query);
     }
 

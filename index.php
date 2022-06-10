@@ -1,24 +1,30 @@
 <?php
-
 require_once "Region.php";
 require_once 'DB.php';
 require_once 'Session.php';
-
-// your code here
+$success = DB::connect(
+    'localhost',        
+    'world',        
+    'root',         
+    '');
+// finds id according to query string id
 $id = $_GET['id']?? null;
-var_dump($id); 
-
+//if id exists finds from dtb else created new
 if($id) {
     $region = find($id, "Region");
 } else {
     $region = new Region;
 }
 
-//validation
-$errors = Session::instance()->get('errors', [])
+//selects all data from Dtb
 
+$data = DB::select('SELECT * FROM `regions2` WHERE 1');
+
+//validation shows message if input is wrong
+$errors = Session::instance()->get('errors', []);
+$success_message = Session::instance()->get('success', []);
 ?>
-<!-- validation messages  -->
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,9 +37,16 @@ $errors = Session::instance()->get('errors', [])
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- validation messages  -->
     <?php foreach ($errors as $error) : ?>
         <div class="message message_error">
             <?= $error ?>
+        </div>
+    <?php endforeach; ?>
+
+    <?php foreach ($success_message as $success) : ?>
+        <div class="message message_error">
+            <?= $success ?>
         </div>
     <?php endforeach; ?>
    
@@ -49,18 +62,28 @@ $errors = Session::instance()->get('errors', [])
                 <input type="text" name="slug"> <br>
                 
                 <input type="submit" value="Send to the DTB">
+                <a href="deletion.php?id="></a>
+                
             </form>
             
         </div>
     </div>
-   <?php 
-//    $region = select(null, null, 'Region');
+
+<!-- list of the dtb -->
+
+   <?php foreach($data as $value) : ?>
+        <?= "<p>$value->name</p>" ?>
+        <?= "<p>$value->slug</p>" ?>
+       
+        <?php endforeach; ?>
+    
+<!-- //    $region = select(null, null, 'Region');
 
 //    foreach($comments as $i => $value) {
 //        echo "<h3 style='text-decoration: underline' >".$value->nickname."</h3>";
 //        echo "<p>".$value->comment."</p>";
 //    }
 // //    var_dump($comments)
-//    ?>
+//     -->
 </body>
 </html>

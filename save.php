@@ -14,11 +14,11 @@ $success = DB::connect(
 
 
 // your code here
-$id = $_GET['id']?? null;
+$id = $_GET['id'] ?? null;
 var_dump($id); 
 
 if($id) {
-    // $region = find($id, "name");
+    $region = DB::selectOne("SELECT * FROM `regions2` WHERE `id`=?", [$id], 'Region');
 } else {
     $region = new Region;
 }
@@ -30,6 +30,8 @@ $errors = [];
 if(empty($_POST["name"])){
     $valid = false;
     $errors[] = "Hey, you forgot the name!" ;
+} else {
+    $success_messages[] = "saved";
 }
 if(empty($_POST["slug"])){
     $valid = false;
@@ -40,6 +42,8 @@ if (!$valid) {
     
     //flash to session
     Session::instance()->flash('errors', $errors);
+    Session::instance()->flash('success', $success_messages);
+    Session::instance()->flash('delete', $delete_messages);
     //redirect back
     if(!$id){
         header('Location: index.php');
@@ -54,7 +58,20 @@ if (!$valid) {
 $region->name = $_POST["name"] ?? $region->name;
 $region->slug = $_POST["slug"] ?? $region->slug;
 
-$region->insert(); 
+
+if($id) {
+    $region->update();
+}else{
+    $region->insert(); 
+}
+
+
+
+
+
+
 var_dump($region->id);
+
+
 
 header("Location: edit.php?id=" . $region->id);
